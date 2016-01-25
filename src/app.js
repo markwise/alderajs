@@ -75,5 +75,4 @@ var $App = function App() {
     });
 };
 
-$App.prototype.version = '0.3.0-rc.1';
-    
+$App.prototype.version = '@version';

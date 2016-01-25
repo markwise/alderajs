@@ -63,4 +63,3 @@ var $createViewElement = (function () {
         return jQuery(parseTypeSelector(selector)).addClass(parseClassSelector(selector));
     };
 }());
-       
