@@ -1,3 +1,4 @@
 module.exports = {
-    build: ['<%= paths.build %>/*']
+    build: ['<%= paths.build %>/*'],
+    dist: ['<%= paths.dist %>/*']
 };

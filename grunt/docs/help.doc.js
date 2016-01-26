@@ -34,4 +34,11 @@ module.exports = function (grunt) {
             'Development build task'
         ])
     );
+    
+    grunt.log.writeln(
+        grunt.log.table([col1Width, col2Width], [
+            'dist',
+            'Distribution build task'
+        ])
+    );
 };

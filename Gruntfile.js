@@ -19,19 +19,22 @@ module.exports = function (grunt) {
         output: '<%= pkg.name %>-<%= pkg.version %>',
 
         paths: {
-            build:    'build', 
-            src:      'src'
+            src:      'src',
+            build:    'build',
+            dist:     'dist'
         },
 
         clean:  require(config + 'clean'),
         concat: require(config + 'concat')(grunt),
         copy:   require(config + 'copy'),
-        jshint: require(config + 'jshint')
+        jshint: require(config + 'jshint'),
+        uglify: require(config + 'uglify')
     });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadTasks('./grunt/tasks');
 };
