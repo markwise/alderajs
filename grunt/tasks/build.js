@@ -10,6 +10,9 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
+        
+            //Validate src files using JSHint
+            'lint',
             
             //Remove existing files in build directory
             'clean:build',

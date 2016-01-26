@@ -1,4 +1,5 @@
 var aldera = (function () {
+    // jshint -W034
     'use strict';
     
     //
@@ -13,6 +14,8 @@ var aldera = (function () {
     // of how variables are named, it becomes confusing using it in two
     // different contexts. Use the more explicit jQuery to reference jQuery.
     //
+    
+    // jshint -W020
     $ = void 0;
     
     
@@ -59,8 +62,10 @@ var aldera = (function () {
     };
 
 
+// jshint ignore:start
 @scripts
+// jshint ignore:end
 
-    
+
     return new $App();
 }($));

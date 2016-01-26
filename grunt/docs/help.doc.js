@@ -20,6 +20,13 @@ module.exports = function (grunt) {
             'View task usage info'
         ])
     );
+    
+    grunt.log.writeln(
+        grunt.log.table([col1Width, col2Width], [
+            'lint',
+            'Validate src files using JSHint'
+        ])
+    );
 
     grunt.log.writeln(
         grunt.log.table([col1Width, col2Width], [

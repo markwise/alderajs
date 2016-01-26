@@ -30,7 +30,7 @@ var $createViewConstructor = function (name, attrs) {
     if (init === void 0) {
         init = function () {
             this.render();
-        }
+        };
     }
     
     // Normalize init as an array

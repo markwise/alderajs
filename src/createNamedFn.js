@@ -14,6 +14,7 @@
 //
 
 var $fn = function (name, fn) {
+    // jshint -W054
     return new Function('fn', [
         'var f = function ', name, '() { fn.apply(this, [].slice.call(arguments)) };',
     

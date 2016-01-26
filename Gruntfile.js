@@ -25,11 +25,13 @@ module.exports = function (grunt) {
 
         clean:  require(config + 'clean'),
         concat: require(config + 'concat')(grunt),
-        copy:   require(config + 'copy')
+        copy:   require(config + 'copy'),
+        jshint: require(config + 'jshint')
     });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadTasks('./grunt/tasks');
 };

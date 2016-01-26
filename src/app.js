@@ -52,6 +52,8 @@ var $App = function App() {
                     // global scope. This allows eval to reference the value
                     // of data-config if it's a global variable.
                     // http://perfectionkills.com/global-eval-what-are-the-options/
+                    
+                    // jshint -W067
                     config = JSON.parse(JSON.stringify((1, eval)('(' + config + ')')));
                 } catch(e) {
                     throw new Error('data-config for ' + name + ' is malformed');
