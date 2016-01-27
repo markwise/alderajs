@@ -21,6 +21,10 @@ module.exports = function (grunt) {
         paths: {
             src:      'src',
             build:    'build',
+            test:     'test',
+            vendor:   '<%= paths.test %>/vendor',
+            specs:    '<%= paths.test %>/specs',
+            reports:  '<%= paths.test %>/reports',
             dist:     'dist'
         },
 
@@ -28,7 +32,8 @@ module.exports = function (grunt) {
         concat: require(config + 'concat')(grunt),
         copy:   require(config + 'copy'),
         jshint: require(config + 'jshint'),
-        uglify: require(config + 'uglify')
+        uglify: require(config + 'uglify'),
+        karma:  require(config + 'karma')
     });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -36,5 +41,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-karma');
     grunt.loadTasks('./grunt/tasks');
 };

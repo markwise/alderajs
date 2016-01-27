@@ -1,27 +1,18 @@
 module.exports = function (grunt) {
     'use strict';
 
-    grunt.registerTask('dist', function () {
-
-        if (arguments.length) {
-            grunt.log.writeln();
-            grunt.log.writeln('This task has no options.');
-            return;
-        }
-
-        grunt.task.run([
+    grunt.registerTask('dist', [
         
-            //Run build task
-            'build',
-            
-            //Remove existing files in distribution directory
-            'clean:dist',
+        //Build aldera.js
+        'build',
         
-            //Copy build files to distribution directory
-            'copy:dist',
-            
-            //Minify distribution
-            'uglify'
-        ]);
-    });
+        //Remove existing files in dist directory
+        'clean:dist',
+    
+        //Copy build files to dist directory
+        'copy:dist',
+        
+        //Minify distribution and generate a source map file
+        'uglify'
+    ]);
 };
