@@ -1,4 +1,4 @@
-var aldera = (function () {
+var aldera = (function ($) {
     // jshint -W034
     'use strict';
     
