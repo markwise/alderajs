@@ -1,1 +1,1 @@
-# alderajs
+# alderajs [![Build Status](https://travis-ci.org/markwise/alderajs.svg?branch=master)](https://travis-ci.org/markwise/alderajs)
