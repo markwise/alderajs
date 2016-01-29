@@ -19,21 +19,22 @@ module.exports = function (grunt) {
         output: '<%= pkg.name %>-<%= pkg.version %>',
 
         paths: {
-            src:      'src',
-            build:    'build',
-            test:     'test',
-            vendor:   '<%= paths.test %>/vendor',
-            specs:    '<%= paths.test %>/specs',
-            reports:  '<%= paths.test %>/reports',
-            dist:     'dist'
+            src:     'src',
+            build:   'build',
+            test:    'test',
+            vendor:  '<%= paths.test %>/vendor',
+            specs:   '<%= paths.test %>/specs',
+            reports: '<%= paths.test %>/reports',
+            dist:    'dist'
         },
 
-        clean:  require(config + 'clean'),
-        concat: require(config + 'concat')(grunt),
-        copy:   require(config + 'copy'),
-        jshint: require(config + 'jshint'),
-        uglify: require(config + 'uglify'),
-        karma:  require(config + 'karma')
+        clean:     require(config + 'clean'),
+        concat:    require(config + 'concat')(grunt),
+        copy:      require(config + 'copy'),
+        jshint:    require(config + 'jshint'),
+        coveralls: require(config + 'coveralls'),
+        uglify:    require(config + 'uglify'),
+        karma:     require(config + 'karma')
     });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -41,6 +42,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-coveralls');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadTasks('./grunt/tasks');
 };

@@ -21,7 +21,7 @@ module.exports = {
             'build/aldera.js': ['coverage']
         },
         coverageReporter: {
-            type: 'html',
+            type: 'lcov',
             dir: '<%= paths.reports %>',
             subdir: function (browser) {
                 return browser.toLowerCase().split(/\s+/)[0];
