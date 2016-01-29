@@ -3,7 +3,7 @@ module.exports = {
         force: true
     },
     
-    build: {
-        src: '<%= paths.reports/**/*.info'
+    default: {
+        src: '<%= paths.reports %>/**/*.info'
     }
 };
