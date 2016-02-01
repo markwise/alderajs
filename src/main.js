@@ -62,9 +62,7 @@ var aldera = (function ($) {
     };
 
 
-// jshint ignore:start
-@scripts
-// jshint ignore:end
+    // @scripts
 
 
     return new $App();

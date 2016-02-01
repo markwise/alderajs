@@ -34,7 +34,7 @@ module.exports = function (grunt) {
                 process: function (src, path) {
                 
                     //Insert concatenated scripts into main module
-                    src = src.replace(/@scripts/, grunt.file.read('build/aldera.js'));
+                    src = src.replace(/[ \t]*\/\/[ \t]*@scripts/, grunt.file.read('build/aldera.js'));
                     
                     //Add package.json version
                     src = src.replace(/@version/, grunt.config.data.pkg.version);
