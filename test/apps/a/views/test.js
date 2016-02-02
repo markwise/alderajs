@@ -1,0 +1,1 @@
+aldera.view('Test', {});
