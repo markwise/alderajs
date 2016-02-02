@@ -54,7 +54,7 @@ var $view = (function () {
     //
 
     var enableEvents = function () {
-        this.$$eventsDisabled = false;
+        this._eventsDisabled = false;
         this.addEvents(this.events);
     };
     
@@ -69,7 +69,7 @@ var $view = (function () {
     //
     
     var disableEvents = function () {
-        this.$$eventsDisabled = true;
+        this._eventsDisabled = true;
         this.el.off();
     };
     
@@ -140,7 +140,7 @@ var $view = (function () {
         
         //If events are disabled, we only need to mark the signature as 
         //being removed since disableEvents unbinds all events
-        if (self.$$eventsDisabled) {
+        if (self._eventsDisabled) {
             return;
         }
         
@@ -252,7 +252,7 @@ var $view = (function () {
         
         //If events are disabled, we want to add the event signature to the
         //events hash without registering the event
-        if (self.$$eventsDisabled) {
+        if (self._eventsDisabled) {
             return;
         }
         
@@ -332,7 +332,7 @@ var $view = (function () {
     var renderOutlets = function () {
         var self = this;
     
-        jQuery.each(self.$$outlets, function (id, view) {
+        jQuery.each(self._outlets, function (id, view) {
             renderOutlet.call(self, id, view);
         });
     };
@@ -353,7 +353,7 @@ var $view = (function () {
 
     var addOutlet = function (id, view) {
         view.el.attr('data-outlet', id);
-        this.$$outlets[id] = view;
+        this._outlets[id] = view;
     };
     
     
@@ -530,7 +530,7 @@ var $view = (function () {
 
 
     return function () {
-        this.$$outlets = {};
+        this._outlets = {};
         this.addEvent = addEvent;
         this.addEvents = addEvents;
         this.removeEvent = removeEvent;
