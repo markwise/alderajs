@@ -5,14 +5,10 @@ var aldera = (function ($) {
     //
     // Why is the jQuery dollar sign being set to undefined?
     //
-    // The dollar sign is being used as an internal convention for variable
-    // names. Root level vars are preceeded with one ($) dollar sign. Private
-    // vars are preceeded with two ($$) dollar signs. After trying several
-    // naming conventions, the dollar sign seems to be the most readable.
-    //
-    // Although using the dollar sign for jQuery would work as expected in spite
-    // of how variables are named, it becomes confusing using it in two
-    // different contexts. Use the more explicit jQuery to reference jQuery.
+    // The dollar sign is being used as an internal convention for root level
+    // variable names. Although using the dollar sign for jQuery would work as 
+    // expected, it becomes confusing using it in two different contexts. Use 
+    // the more explicit jQuery to reference jQuery.
     //
     
     // jshint -W020
