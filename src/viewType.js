@@ -1,20 +1,16 @@
-//
-// @constructor
-// $ViewType
-//
-
-var $ViewType = function ViewType(name, attrs) {
-    this.$$View = $createViewConstructor(name, attrs);
+var $View = function View(name, attrs) {
+    this._name = name;
+    this._Fn = $createViewConstructor(name, attrs);
 };
-    
+
 (function () {
 
-    //
-    // create
-    //
-
     this.create = function (config) {
-        return new this.$$View($isObject(config) ? config : {});
+        return new this._Fn($isObject(config) ? config : {});
     };
     
-}).call($ViewType.prototype);
+    this.remove = function () {
+        aldera._views[this._name] = void 0;
+    };
+    
+}).call($View.prototype);
