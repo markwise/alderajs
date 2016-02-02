@@ -1,27 +1,22 @@
-//
-// @constructor
-// $App
-//
-// The aldera application.
-//
-
 var $App = function App() {
     var self = this;
     
     self.config = new $Data();
     self.data = new $Data();
     
-    $store.call(this, 'view');
-    $store.call(this, 'mixin');
-    $store.call(this, 'module');
-    $store.call(this, 'fn');
-    $store.call(this, 'service');
+    // Stores
+    self._views = {};
+    self._mixins = {};
+    self._modules = {};
+    self._fns = {};
+    self._services = {};
     
-    //Initialize views
+    // Initialize default views
     jQuery(function () {
         jQuery('[data-view]').each(function () {
             var el = jQuery(this),
                 name = el.attr('data-view'),
+                
                 // If config is not defined, it's set to an empty string. This 
                 // will be true if the optional data-config attribute doesn't 
                 // exist. If it's defined, trim any whitespace so we know that 
@@ -77,4 +72,60 @@ var $App = function App() {
     });
 };
 
-$App.prototype.version = '@version';
+(function () {
+
+    var list = function (type) {
+        return function () {
+            var store = this['_' + type + 's'],
+                a = [];
+            
+            jQuery.each(store, function (key, value) {
+                if (value) a.push(key);
+            });
+            
+            console.log(a.join(', '));
+        };
+    };
+    
+    
+    var store = function (type) { 
+        return function (name, fn) {
+            var store = this['_' + type + 's'],
+                val = store[name];
+    
+            if (fn) {
+                if (val) {
+                    console.warn('The ' + type + ' "' + name + '" is already defined. Use aldera.' + type + 's() to log all ' + type + 's.');
+                } else {
+                    if (type === 'view') {
+                        store[name] = new $View(name, fn);
+                    } else
+                    if (type === 'service') {
+                        store[name] = fn($root);
+                    } else {
+                        store[name] = fn();
+                    }
+                }
+            
+                //Return the application instance for chaining
+                return this;
+            } else {
+                return val;
+            }
+        };
+    };
+    
+    
+    this.view = store('view');
+    this.views = list('view');
+    this.mixin = store('mixin');
+    this.mixins = list('mixin');
+    this.module = store('module');
+    this.modules = list('module');
+    this.fn = store('fn');
+    this.fns = list('fn');
+    this.service = store('service');
+    this.services = list('service');
+    this.version = '@version';
+
+}).call($App.prototype);

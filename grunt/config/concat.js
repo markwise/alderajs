@@ -21,7 +21,6 @@ module.exports = function (grunt) {
                 '<%= paths.src %>/createNamedFn.js',
                 '<%= paths.src %>/createViewConstructor.js',
                 '<%= paths.src %>/viewType.js',
-                '<%= paths.src %>/store.js',
                 '<%= paths.src %>/data.js',
                 '<%= paths.src %>/app.js'
             ],

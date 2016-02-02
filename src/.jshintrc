@@ -1,7 +1,6 @@
 {
   "strict": "implied",
   "bitwise": true,
-  "curly": true,
   "eqeqeq": true,
   "forin": true,
   "freeze": true,
@@ -36,7 +35,7 @@
     "$view": true,
     "$fn": true,
     "$createViewConstructor": true,
-    "$ViewType": true,
+    "$View": true,
     "$store": true,
     "$Data": true,
     "$App": true
