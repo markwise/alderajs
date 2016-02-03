@@ -68,6 +68,18 @@ describe('aldera.view', function () {
             a = aldera.view('A').create();
             expect(a.el).toEqual('span.a.foo.bar');
         });
+        
+        it('should be overridden by config object', function () {
+            aldera.view('A', {
+                aspect: 'span.foo.bar'
+            });
+            
+            a = aldera.view('A').create({
+                aspect: 'section.hello.world'
+            });
+            
+            expect(a.el).toEqual('section.a.hello.world');
+        });
     });
     
     
@@ -246,11 +258,11 @@ describe('aldera.view', function () {
             aldera.view('A').create();
         });
         
-        it('should have view element as callback parameter', function (done) {
+        it('callback should have view element as a parameter', function (done) {
             aldera.view('A', {
                 init: function () {
                     this.render(function (el) {
-                        expect(this.el).toBe(el);
+                        expect(el).toBe(this.el);
                         done();
                     });
                 }
@@ -264,7 +276,7 @@ describe('aldera.view', function () {
                 init: function () {
                     this.data.set('title', 'foo bar');
                 
-                    this.render('x', function (el) {
+                    this.render('data', function (el) {
                         expect(el).toHaveHtml('<h1>foo bar</h1>');
                         done();
                     });
@@ -272,6 +284,366 @@ describe('aldera.view', function () {
             });
             
             aldera.view('A').create();
+        });
+    });
+        
+        
+    describe('addOutlet', function () {
+        afterEach(function () {
+            aldera.view('A').remove();
+            aldera.view('C').remove();
+        });
+
+        it('should add an outlet', function (done) {
+            aldera.view('A', {});
+        
+            aldera.view('C', {
+                init: function () {
+                    this.addOutlet('outlet1', aldera.view('A').create());
+                
+                    this.render('outlet', function (el) {
+                        expect(el).toHaveHtml([
+                            '<div class="a" data-view="A" data-outlet="outlet1">',
+                                '<h1>a</h1>',
+                            '</div>'
+                        ].join(''));
+                    
+                        done();
+                    });
+                }
+            });
+        
+            aldera.view('C').create();
+        });
+    });
+    
+    
+    describe('addOutlets', function () {
+        beforeEach(function () {
+            aldera.view('A', {});
+            aldera.view('B', {});
+        });
+    
+        afterEach(function () {
+            aldera.view('A').remove();
+            aldera.view('B').remove();
+            aldera.view('C').remove();
+        });
+        
+        it('should add a group of outlets', function (done) {
+            aldera.view('C', {
+                init: function () {
+                    this.addOutlets({
+                        outlet1: aldera.view('A').create(),
+                        outlet2: aldera.view('B').create()
+                    });
+                
+                    this.render('outlets', function (el) {
+                        expect(el).toHaveHtml([
+                            '<div class="a" data-view="A" data-outlet="outlet1">',
+                                '<h1>a</h1>',
+                            '</div>\n',
+                            '<div class="b" data-view="B" data-outlet="outlet2">',
+                                '<h1>b</h1>',
+                            '</div>'
+                        ].join(''));
+                    
+                        done();
+                    });
+                }
+            });
+        
+            aldera.view('C').create();
+        });
+        
+        it('should add a group of outlets from config object', function (done) {
+            aldera.view('C', {
+                init: function () {
+                    this.render('outlets', function (el) {
+                        expect(el).toHaveHtml([
+                            '<div class="a" data-view="A" data-outlet="outlet1">',
+                                '<h1>a</h1>',
+                            '</div>\n',
+                            '<div class="b" data-view="B" data-outlet="outlet2">',
+                                '<h1>b</h1>',
+                            '</div>'
+                        ].join(''));
+                    
+                        done();
+                    });
+                }
+            });
+        
+            aldera.view('C').create({
+                outlets: {
+                    outlet1: aldera.view('A').create(),
+                    outlet2: aldera.view('B').create()
+                }
+            });
+        });
+    });
+        
+        
+    describe('replaceOutlet', function () {
+        beforeEach(function () {
+            aldera.view('A', {});
+            aldera.view('B', {});
+        });
+        
+        afterEach(function () {
+            aldera.view('A').remove();
+            aldera.view('B').remove();
+            aldera.view('C').remove();
+        });
+    
+        it('should call callback after default delay', function (done) {
+            aldera.view('C', {
+                init: function () {
+                    this.render('outlet', function () {
+                        var spy = jasmine.createSpy();
+                        
+                        this.replaceOutlet('outlet1', aldera.view('A').create(), spy);
+                        
+                        setTimeout(function () {
+                            expect(spy).not.toHaveBeenCalled();
+                        }, 49);
+                        
+                        setTimeout(function () {
+                            expect(spy).toHaveBeenCalled();
+                            done();
+                        }, 50);
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
+        });
+        
+        it('should call callback after delay', function (done) {
+            aldera.view('C', {
+                init: function () {
+                    this.render('outlet', function () {
+                        var spy = jasmine.createSpy();
+                        
+                        this.replaceOutlet('outlet1', aldera.view('A').create(), spy, 100);
+                        
+                        setTimeout(function () {
+                            expect(spy).not.toHaveBeenCalled();
+                        }, 99);
+                        
+                        setTimeout(function () {
+                            expect(spy).toHaveBeenCalled();
+                            done();
+                        }, 100);
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
+        });
+        
+        it('callback should have view as context', function (done) {
+             aldera.view('C', {
+                init: function () {
+                    var self = this;
+                    
+                    this.render('outlet', function () {
+                        this.replaceOutlet('outlet1', aldera.view('A').create(), function () {
+                            expect(this).toBe(self);
+                            done();
+                        });
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
+        });
+        
+        it('callback should have view element as a parameter', function (done) {
+             aldera.view('C', {
+                init: function () {
+                    this.render('outlet', function () {
+                        this.replaceOutlet('outlet1', aldera.view('A').create(), function (el) {
+                            expect(el).toBe(this.el);
+                            done();
+                        });
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
+        });
+        
+        it('should replace an outlet', function (done) {
+            aldera.view('C', {
+                init: function () {
+                    this.addOutlet('outlet1', aldera.view('A').create());
+                    
+                    this.render('outlet', function (el) {
+                        expect(el).toHaveHtml([
+                            '<div class="a" data-view="A" data-outlet="outlet1">',
+                                '<h1>a</h1>',
+                            '</div>'
+                        ].join(''));
+                        
+                        this.replaceOutlet('outlet1', aldera.view('B').create(), function () {
+                            expect(el).toHaveHtml([
+                                '<div class="b" data-view="B" data-outlet="outlet1">',
+                                    '<h1>b</h1>',
+                                '</div>'
+                            ].join(''));
+                        
+                            done();
+                        });
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
+        });
+    });
+        
+    
+    describe('replaceOutlets', function () {
+        beforeEach(function () {
+            aldera.view('A', {});
+            aldera.view('B', {});
+            aldera.view('X', {});
+            aldera.view('Y', {});
+        });
+        
+        afterEach(function () {
+            aldera.view('A').remove();
+            aldera.view('B').remove();
+            aldera.view('C').remove();
+            aldera.view('X').remove();
+            aldera.view('Y').remove();
+        });
+    
+        it('should call callback after default delay', function (done) {
+            aldera.view('C', {
+                init: function () {
+                    this.render('outlets', function () {
+                        var spy = jasmine.createSpy();
+                        
+                        this.replaceOutlets({
+                            outlet1: aldera.view('A').create()
+                        }, spy);
+                        
+                        setTimeout(function () {
+                            expect(spy).not.toHaveBeenCalled();
+                        }, 49);
+                        
+                        setTimeout(function () {
+                            expect(spy).toHaveBeenCalled();
+                            done();
+                        }, 50);
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
+        });
+        
+        it('should call callback after delay', function (done) {
+            aldera.view('C', {
+                init: function () {
+                    this.render('outlets', function () {
+                        var spy = jasmine.createSpy();
+                        
+                        this.replaceOutlets({
+                            outlet1: aldera.view('A').create()
+                        }, spy, 100);
+                        
+                        setTimeout(function () {
+                            expect(spy).not.toHaveBeenCalled();
+                        }, 99);
+                        
+                        setTimeout(function () {
+                            expect(spy).toHaveBeenCalled();
+                            done();
+                        }, 100);
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
+        });
+        
+        it('callback should have view as context', function (done) {
+             aldera.view('C', {
+                init: function () {
+                    var self = this;
+                    
+                    this.render('outlets', function () {
+                        this.replaceOutlets({
+                            outlet1: aldera.view('A').create()
+                        }, function () {
+                            expect(this).toBe(self);
+                            done();
+                        });
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
+        });
+        
+        it('callback should have view element as a parameter', function (done) {
+             aldera.view('C', {
+                init: function () {
+                    this.render('outlets', function () {
+                        this.replaceOutlets({
+                            outlet1: aldera.view('A').create()
+                        }, function (el) {
+                            expect(el).toBe(this.el);
+                            done();
+                        });
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
+        });
+        
+        it('should replace a group of outlets', function (done) {
+            aldera.view('C', {
+                init: function () {
+                    this.addOutlets({
+                        outlet1: aldera.view('A').create(),
+                        outlet2: aldera.view('X').create()
+                    });
+                    
+                    this.render('outlets', function (el) {
+                        expect(el).toHaveHtml([
+                            '<div class="a" data-view="A" data-outlet="outlet1">',
+                                '<h1>a</h1>',
+                            '</div>\n',
+                            '<div class="x" data-view="X" data-outlet="outlet2">',
+                                '<h1>x</h1>',
+                            '</div>'
+                        ].join(''));
+                        
+                        this.replaceOutlets({
+                            outlet1: aldera.view('B').create(),
+                            outlet2: aldera.view('Y').create()
+                        }, function () {
+                            expect(el).toHaveHtml([
+                                '<div class="b" data-view="B" data-outlet="outlet1">',
+                                    '<h1>b</h1>',
+                                '</div>\n',
+                                '<div class="y" data-view="Y" data-outlet="outlet2">',
+                                    '<h1>y</h1>',
+                                '</div>'
+                            ].join(''));
+                        
+                            done();
+                        });
+                    });
+                }
+            });
+            
+            aldera.view('C').create();
         });
     });
 });
