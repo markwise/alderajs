@@ -389,9 +389,17 @@ var $view = (function () {
     //      A view instance.
     //
     
-    var replaceOutlet = function (id, view) {
-        this.addOutlet(id, view);
-        renderOutlet.call(this, id, view);
+    var replaceOutlet = function (id, view, fn, delay) {
+        var self = this;
+        
+        self.addOutlet(id, view);
+        renderOutlet.call(self, id, view);
+        
+        if (fn) {
+            setTimeout(function () {
+                fn.call(self, self.el);
+            }, delay || 50);
+        }
     };
     
     
@@ -405,12 +413,18 @@ var $view = (function () {
     //      A group of outlet id/view entries.
     //
     
-    var replaceOutlets = function (outlets) {
+    var replaceOutlets = function (outlets, fn, delay) {
         var self = this;
     
         jQuery.each(outlets, function (id, view) {
             self.replaceOutlet(id, view);
         });
+        
+        if (fn) {
+            setTimeout(function () {
+                fn.call(self, self.el);
+            }, delay || 50);
+        }
     };
     
     
