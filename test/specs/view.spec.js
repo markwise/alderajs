@@ -617,4 +617,147 @@ describe('aldera.view', function () {
             aldera.view('C').create();
         });
     });
+    
+    
+    describe('events', function () {
+        var spy;
+    
+        beforeEach(function () {
+            spy = jasmine.createSpy(); 
+        });
+        
+        afterEach(function () {
+            spy = void 0;
+            aldera.view('A').remove();
+        });
+    
+        it('should add an event to the view element', function () {
+            aldera.view('A', {
+                events: {
+                    'click': spy
+                },
+                
+                init: function () {
+                    expect(spy).not.toHaveBeenCalled();
+                    this.el.trigger('click');
+                    expect(spy).toHaveBeenCalled();
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should add multiple events to the view element', function () {
+            aldera.view('A', {
+                events: {
+                    'mouseover|mouseout': spy
+                },
+                
+                init: function () {
+                    expect(spy.calls.count()).toBe(0);
+                    this.el.trigger('mouseover');
+                    expect(spy.calls.count()).toBe(1);
+                    this.el.trigger('mouseover');
+                    expect(spy.calls.count()).toBe(2);
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should delegate an event for an element', function (done) {
+            aldera.view('A', {
+                events: {
+                    'click .salt': spy
+                },
+                
+                init: function () {
+                    this.render('event', function (el) {
+                        expect(spy).not.toHaveBeenCalled();
+                        el.find('.salt').trigger('click');
+                        expect(spy).toHaveBeenCalled();
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should delegate multiple events for an element', function (done) {
+            aldera.view('A', {
+                events: {
+                    'mouseover|mouseout .salt': spy
+                },
+                
+                init: function () {
+                    this.render('event', function (el) {
+                        var salt = el.find('.salt');
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('mouseover');
+                        expect(spy.calls.count()).toBe(1);
+                        salt.trigger('mouseout');
+                        expect(spy.calls.count()).toBe(2);
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should delegate an event for multiple elements', function (done) {
+            aldera.view('A', {
+                events: {
+                    'click .salt|.pepper': spy
+                },
+                
+                init: function () {
+                    this.render('event', function (el) {
+                        var salt = el.find('.salt');
+                        var pepper = el.find('.pepper');
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('click');
+                        expect(spy.calls.count()).toBe(1);
+                        pepper.trigger('click');
+                        expect(spy.calls.count()).toBe(2);
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        
+        it('should delegate multiple events for multiple elements', function (done) {
+            aldera.view('A', {
+                events: {
+                    'mouseover|mouseout .salt|.pepper': spy
+                },
+                
+                init: function () {
+                    this.render('event', function (el) {
+                        var salt = el.find('.salt');
+                        var pepper = el.find('.pepper');
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('mouseover');
+                        expect(spy.calls.count()).toBe(1);
+                        salt.trigger('mouseout');
+                        expect(spy.calls.count()).toBe(2);
+                        pepper.trigger('mouseover');
+                        expect(spy.calls.count()).toBe(3);
+                        pepper.trigger('mouseout');
+                        expect(spy.calls.count()).toBe(4);
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+    });
 });
