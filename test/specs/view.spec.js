@@ -760,4 +760,47 @@ describe('aldera.view', function () {
             aldera.view('A').create();
         });
     });
+    
+    
+    describe('addEvent', function () {
+        var spy;
+        
+        beforeEach(function () {
+            spy = jasmine.createSpy();
+        });
+        
+        afterEach(function () {
+            spy = void 0;
+            aldera.view('A').remove();
+        });
+    
+        it('should add an event to the view element', function () {
+            aldera.view('A', {
+                init: function () {
+                    this.addEvent('click', spy);
+                    expect(spy).not.toHaveBeenCalled();
+                    this.el.trigger('click');
+                    expect(spy).toHaveBeenCalled();
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should add a delegated event for an element', function (done) {
+            aldera.view('A', {
+                init: function () {
+                    this.render('event', function (el) {
+                        this.addEvent('click .salt', spy);
+                        expect(spy).not.toHaveBeenCalled();
+                        el.find('.salt').trigger('click');
+                        expect(spy).toHaveBeenCalled();
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+    });
 });
