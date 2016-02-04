@@ -803,4 +803,61 @@ describe('aldera.view', function () {
             aldera.view('A').create();
         });
     });
+    
+    
+    describe('addEvents', function () {
+        var spy;
+        
+        beforeEach(function () {
+            spy = jasmine.createSpy();
+        });
+        
+        afterEach(function () {
+            spy = void 0;
+            aldera.view('A').remove();
+        });
+    
+        it('should add multiple events to the view element', function () {
+            aldera.view('A', {
+                init: function () {
+                    this.addEvents({
+                        'mouseover': spy,
+                        'mouseout': spy
+                    });
+                    
+                    expect(spy.calls.count()).toBe(0);
+                    this.el.trigger('mouseover');
+                    expect(spy.calls.count()).toBe(1);
+                    this.el.trigger('mouseout');
+                    expect(spy.calls.count()).toBe(2);
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should add multiple delegated events for an element', function (done) {
+            aldera.view('A', {
+                init: function () {
+                    this.render('event', function (el) {
+                        var salt = el.find('.salt');
+                    
+                        this.addEvents({
+                            'mouseover .salt': spy,
+                            'mouseout .salt': spy
+                        });
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('mouseover');
+                        expect(spy.calls.count()).toBe(1);
+                        salt.trigger('mouseout');
+                        expect(spy.calls.count()).toBe(2);
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+    });
 });
