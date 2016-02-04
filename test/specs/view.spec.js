@@ -84,10 +84,8 @@ describe('aldera.view', function () {
     
     
     describe('init', function () {
-        var a;
         
         afterEach(function () {
-            a = void 0;
             aldera.view('A').remove();
         });
     
@@ -103,6 +101,8 @@ describe('aldera.view', function () {
         });
         
         it('should create init method if not defined and auto render view', function (done) {
+            var a;
+            
             aldera.view('A', {});
             a = aldera.view('A').create();
             
@@ -139,41 +139,9 @@ describe('aldera.view', function () {
     
 
     describe('render', function () {
-        var a;
         
         afterEach(function () {
-            a = void 0;
             aldera.view('A').remove();
-        });
-        
-        it('should render default template', function (done) {
-            aldera.view('A', {
-                init: function () {
-                    this.render();
-                    
-                    setTimeout(function () {
-                        expect(this.el).toHaveHtml('<h1>a</h1>');
-                        done();
-                    }.bind(this), 50);
-                }
-            });
-            
-            aldera.view('A').create();
-        });
-        
-        it('should render alternate template', function (done) {
-            aldera.view('A', {
-                init: function () {
-                    this.render('b');
-                    
-                    setTimeout(function () {
-                        expect(this.el).toHaveHtml('<h1>b</h1>');
-                        done();
-                    }.bind(this), 50);
-                }
-            });
-            
-            aldera.view('A').create();
         });
         
         it('should call render callback after default delay', function (done) {
@@ -215,54 +183,53 @@ describe('aldera.view', function () {
             
             aldera.view('A').create();
         });
-    
-        it('should render alternate template and call render callback after default delay', function (done) {
+        
+        it('should have view as callback context', function (done) {
             aldera.view('A', {
                 init: function () {
-                    var spy = jasmine.createSpy();
-                    this.render('b', spy);
-                    
-                    setTimeout(function () {
-                        expect(spy).not.toHaveBeenCalled();
-                    }, 49);
-        
-                    setTimeout(function () {
-                        expect(spy).toHaveBeenCalled();
-                        expect(this.el).toHaveHtml('<h1>b</h1>');
+                    var self = this;
+                
+                    this.render(function () {
+                        expect(this).toBe(self);
                         done();
-                    }.bind(this), 50);
+                    });
                 }
             });
             
             aldera.view('A').create();
         });
         
-        it('should render alternate template and call render callback after delay', function (done) {
-            aldera.view('A', {
-                init: function () {
-                    var spy = jasmine.createSpy();
-                    this.render('b', spy, 100);
-                    
-                    setTimeout(function () {
-                        expect(spy).not.toHaveBeenCalled();
-                    }, 99);
-        
-                    setTimeout(function () {
-                        expect(spy).toHaveBeenCalled();
-                        expect(this.el).toHaveHtml('<h1>b</h1>');
-                        done();
-                    }.bind(this), 100);
-                }
-            });
-            
-            aldera.view('A').create();
-        });
-        
-        it('callback should have view element as a parameter', function (done) {
+        it('should have view element as callback parameter', function (done) {
             aldera.view('A', {
                 init: function () {
                     this.render(function (el) {
                         expect(el).toBe(this.el);
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });        
+        
+        it('should render default template', function (done) {
+            aldera.view('A', {
+                init: function () {
+                    this.render(function (el) {
+                        expect(el).toHaveHtml('<h1>a</h1>');
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should render alternate template', function (done) {
+            aldera.view('A', {
+                init: function () {
+                    this.render('b', function (el) {
+                        expect(el).toHaveHtml('<h1>b</h1>');
                         done();
                     });
                 }
@@ -289,6 +256,7 @@ describe('aldera.view', function () {
         
         
     describe('addOutlet', function () {
+        
         afterEach(function () {
             aldera.view('A').remove();
             aldera.view('C').remove();
@@ -319,6 +287,7 @@ describe('aldera.view', function () {
     
     
     describe('addOutlets', function () {
+        
         beforeEach(function () {
             aldera.view('A', {});
             aldera.view('B', {});
@@ -385,6 +354,7 @@ describe('aldera.view', function () {
         
         
     describe('replaceOutlet', function () {
+        
         beforeEach(function () {
             aldera.view('A', {});
             aldera.view('B', {});
@@ -442,7 +412,7 @@ describe('aldera.view', function () {
             aldera.view('C').create();
         });
         
-        it('callback should have view as context', function (done) {
+        it('should have view as callback context', function (done) {
              aldera.view('C', {
                 init: function () {
                     var self = this;
@@ -459,7 +429,7 @@ describe('aldera.view', function () {
             aldera.view('C').create();
         });
         
-        it('callback should have view element as a parameter', function (done) {
+        it('should have view element as callback parameter', function (done) {
              aldera.view('C', {
                 init: function () {
                     this.render('outlet', function () {
@@ -505,6 +475,7 @@ describe('aldera.view', function () {
         
     
     describe('replaceOutlets', function () {
+        
         beforeEach(function () {
             aldera.view('A', {});
             aldera.view('B', {});
@@ -570,7 +541,7 @@ describe('aldera.view', function () {
             aldera.view('C').create();
         });
         
-        it('callback should have view as context', function (done) {
+        it('should have view as callback context', function (done) {
              aldera.view('C', {
                 init: function () {
                     var self = this;
@@ -589,7 +560,7 @@ describe('aldera.view', function () {
             aldera.view('C').create();
         });
         
-        it('callback should have view element as a parameter', function (done) {
+        it('should have view element as callback parameter', function (done) {
              aldera.view('C', {
                 init: function () {
                     this.render('outlets', function () {

@@ -15,5 +15,6 @@ describe('aldera', function () {
         expect(aldera.fns).toEqual(jasmine.any(Function));
         expect(aldera.service).toEqual(jasmine.any(Function));
         expect(aldera.services).toEqual(jasmine.any(Function));
+        expect(aldera.compileTemplates).toEqual(jasmine.any(Function));
     });
 });
