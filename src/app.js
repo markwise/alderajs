@@ -116,6 +116,26 @@ var $App = function App() {
     };
     
     
+    this.compileTemplates = function (fn) {
+        var paths = aldera.config.get('template.paths'),
+            templates = [];
+
+        jQuery.each(paths, function (key, path) {
+            var template;
+            
+            if (!$templates[key]) {
+                template = $loadTemplate(path);
+                templates.push(template);
+                $templates[key] = template;
+            }
+        });
+
+        jQuery.when.apply(jQuery, templates).done(function () {
+            if (fn) fn();
+        });
+    };
+    
+    
     this.view = store('view');
     this.views = list('view');
     this.mixin = store('mixin');

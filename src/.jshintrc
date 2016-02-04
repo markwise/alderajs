@@ -30,6 +30,7 @@
     "$isObject": true,
     "$isArray": true,
     "$isFunction": true,
+    "$loadTemplate": true,
     "$createViewElement": true,
     "$initialize": true,
     "$view": true,

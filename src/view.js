@@ -431,33 +431,6 @@ var $view = (function () {
     ////////////////////////////////////////////////////////////////////////
     // Render API
     ////////////////////////////////////////////////////////////////////////
-    
-    //
-    // @private
-    // loadTemplate
-    //
-    // Loads a view's template and compiles it into a render function that
-    // is passed to the resolved promise.
-    //
-    // @param {string} url
-    //      The url of the template file to load. The url must be the value
-    //      of an entry in the template paths configuration object.
-    //
-    // @returns {object}
-    //      Returns a jQuery promise.
-    //
-    
-    var loadTemplate = function (url) {
-        var deferred = jQuery.Deferred();
-    
-        jQuery.get($root + url).done(function (html) {
-            var compile = aldera.config.get('template.compile');
-            deferred.resolve(compile(html));
-        });
-        
-        return deferred.promise();
-    };
-
 
     //
     // @private
@@ -487,7 +460,7 @@ var $view = (function () {
                 throw new Error(templateName + ' is not a defined template path');
             }
             
-            template = $templates[templateName] = loadTemplate(url);
+            template = $templates[templateName] = $loadTemplate(url);
         }
         
         return template;
@@ -534,7 +507,7 @@ var $view = (function () {
             renderOutlets.call(self);
             
             //Call optional render callback
-            if ($isFunction(fn)) {
+            if (fn) {
                 setTimeout(function () {
                     fn.call(self, el);
                 }, delay || 50);
