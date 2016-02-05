@@ -638,9 +638,9 @@ describe('aldera.view', function () {
                 },
                 
                 init: function () {
-                    expect(spy).not.toHaveBeenCalled();
+                    expect(spy.calls.count()).toBe(0);
                     this.el.trigger('click');
-                    expect(spy).toHaveBeenCalled();
+                    expect(spy.calls.count()).toBe(1);
                 }
             });
             
@@ -654,10 +654,12 @@ describe('aldera.view', function () {
                 },
                 
                 init: function () {
+                    var el = this.el;
+                
                     expect(spy.calls.count()).toBe(0);
-                    this.el.trigger('mouseover');
+                    el.trigger('mouseover');
                     expect(spy.calls.count()).toBe(1);
-                    this.el.trigger('mouseover');
+                    el.trigger('mouseover');
                     expect(spy.calls.count()).toBe(2);
                 }
             });
@@ -673,9 +675,33 @@ describe('aldera.view', function () {
                 
                 init: function () {
                     this.render('event', function (el) {
-                        expect(spy).not.toHaveBeenCalled();
+                        expect(spy.calls.count()).toBe(0);
                         el.find('.salt').trigger('click');
-                        expect(spy).toHaveBeenCalled();
+                        expect(spy.calls.count()).toBe(1);
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should delegate an event for multiple elements', function (done) {
+            aldera.view('A', {
+                events: {
+                    'click .salt|.pepper': spy
+                },
+                
+                init: function () {
+                    this.render('event', function (el) {
+                        var salt = el.find('.salt'),
+                            pepper = el.find('.pepper');
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('click');
+                        expect(spy.calls.count()).toBe(1);
+                        pepper.trigger('click');
+                        expect(spy.calls.count()).toBe(2);
                         done();
                     });
                 }
@@ -707,31 +733,6 @@ describe('aldera.view', function () {
             aldera.view('A').create();
         });
         
-        it('should delegate an event for multiple elements', function (done) {
-            aldera.view('A', {
-                events: {
-                    'click .salt|.pepper': spy
-                },
-                
-                init: function () {
-                    this.render('event', function (el) {
-                        var salt = el.find('.salt');
-                        var pepper = el.find('.pepper');
-                        
-                        expect(spy.calls.count()).toBe(0);
-                        salt.trigger('click');
-                        expect(spy.calls.count()).toBe(1);
-                        pepper.trigger('click');
-                        expect(spy.calls.count()).toBe(2);
-                        done();
-                    });
-                }
-            });
-            
-            aldera.view('A').create();
-        });
-        
-        
         it('should delegate multiple events for multiple elements', function (done) {
             aldera.view('A', {
                 events: {
@@ -740,8 +741,8 @@ describe('aldera.view', function () {
                 
                 init: function () {
                     this.render('event', function (el) {
-                        var salt = el.find('.salt');
-                        var pepper = el.find('.pepper');
+                        var salt = el.find('.salt'),
+                            pepper = el.find('.pepper');
                         
                         expect(spy.calls.count()).toBe(0);
                         salt.trigger('mouseover');
