@@ -778,11 +778,9 @@ describe('aldera.view', function () {
         it('should add an event to the view element', function () {
             aldera.view('A', {
                 init: function () {
-                    var el = this.el;
-                
                     this.addEvent('click', spy);
                     expect(spy.calls.count()).toBe(0);
-                    el.trigger('click');
+                    this.el.trigger('click');
                     expect(spy.calls.count()).toBe(1);
                 }
             });
@@ -811,11 +809,9 @@ describe('aldera.view', function () {
              aldera.view('A', {
                 init: function () {
                     this.render('event', function (el) {
-                        var salt = el.find('.salt');
-                        
                         this.addEvent('click .salt', spy);
                         expect(spy.calls.count()).toBe(0);
-                        salt.trigger('click');
+                        el.find('.salt').trigger('click');
                         expect(spy.calls.count()).toBe(1);
                         done();
                     });
