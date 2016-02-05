@@ -512,7 +512,6 @@ var $view = (function () {
 
 
     return function () {
-        this._outlets = {};
         this.addEvent = addEvent;
         this.addEvents = addEvents;
         this.removeEvent = removeEvent;

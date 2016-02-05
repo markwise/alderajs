@@ -5,6 +5,8 @@
 var $initialize = function (config) {
     var opts = $isObject(config.opts) ? config.opts : {};
     
+    this._outlets = {};
+    
     this.el = $createViewElement(config.aspect || this.aspect)
         .addClass(this.defaultTemplateName)
         .attr('data-view', this.constructor.name);
