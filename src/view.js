@@ -130,11 +130,6 @@ var $view = (function () {
             events = self.events,
             el;
         
-        //Do nothing if the event has already been removed
-        if (events[signature] === void 0) {
-            return;
-        }
-        
         //Mark the event signature as being removed
         events[signature] = void 0;
         
