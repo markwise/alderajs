@@ -40,7 +40,7 @@ var $view = (function () {
         signature = signature.split(/\s+/);
     
         return {
-            events: signature[0].replace(/\|/g, ' '),
+            events: signature[0].split('|'),
             targets: (signature[1] || '').split('|')
         };
     };
@@ -126,25 +126,16 @@ var $view = (function () {
     //
     
     var removeEvent = function (signature) {
-        var self = this,
-            events = self.events,
-            el;
-        
-        //Mark the event signature as being removed
-        events[signature] = void 0;
-        
-        //If events are disabled, we only need to mark the signature as 
-        //being removed since disableEvents unbinds all events
-        if (self._eventsDisabled) {
-            return;
-        }
+        var el = this.el,
+            events = this._events;
         
         signature = parseSignature(signature);
-        events = signature.events;
-        el = self.el;
-
-        jQuery.each(signature.targets, function (index, target) {
-            el.off(events, target);
+        
+        jQuery.each(signature.events, function (index, event) {
+            jQuery.each(signature.targets, function (index, target) {
+                events[(event + ' ' + target).trim()] = void 0;
+                el.off(event, target);
+            });
         });
     };
     
@@ -231,36 +222,18 @@ var $view = (function () {
     
     var addEvent = function (signature, fn) {
         var self = this,
-            events,
-            el;
+            el = this.el,
+            events = this._events;
         
-        //Do nothing if the event handler is undefined. The event handler is
-        //set to undefined when calling removeEvents or removeEvent methods.
-        if (fn === void 0) {
-            return;
-        }
-
-        //Removing the event before adding it prevents duplicate events
-        //from being registered
-        self.removeEvent(signature);
-        self.events[signature] = fn;
-        
-        //If events are disabled, we want to add the event signature to the
-        //events hash without registering the event
-        if (self._eventsDisabled) {
-            return;
-        }
-        
-        if ($isString(fn)) {
-            fn = self[fn];
-        }
-        
+        this.removeEvent(signature);
         signature = parseSignature(signature);
-        events = signature.events;
-        el = self.el;
-
-        jQuery.each(signature.targets, function (index, target) {
-            el.on(events, target, jQuery.proxy(fn, self));
+        if ($isString(fn)) fn = this[fn];
+    
+        jQuery.each(signature.events, function (index, event) {
+            jQuery.each(signature.targets, function (index, target) {
+                events[(event + ' ' + target).trim()] = fn;              
+                el.on(event, target, jQuery.proxy(fn, self));
+            });
         });
     };
     

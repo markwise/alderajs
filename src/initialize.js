@@ -5,6 +5,7 @@
 var $initialize = function (config) {
     var opts = $isObject(config.opts) ? config.opts : {};
     
+    this._events = {};
     this._outlets = {};
     
     this.el = $createViewElement(config.aspect || this.aspect)
