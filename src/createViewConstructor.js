@@ -38,11 +38,6 @@ var $createViewConstructor = function (name, attrs) {
         proto.init = [init];
     }
     
-    // Make sure an events object exists
-    if(!proto.events) {
-        proto.events = {};
-    }
-    
     // Mixin default view attributes
     $view.call(proto);
 
