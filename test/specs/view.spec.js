@@ -1200,4 +1200,143 @@ describe('aldera.view', function () {
             aldera.view('A').create();
         });
     });
+    
+    
+    describe('disableEvents, enableEvents', function () {
+        var spy;
+        
+        beforeEach(function () {
+            spy = jasmine.createSpy();
+        });
+        
+        afterEach(function () {
+            spy = void 0;
+            aldera.view('A').remove();
+        });
+    
+        it('should disable events', function (done) {
+            aldera.view('A', {
+                events: {
+                    'click .salt|.pepper': spy
+                },
+                
+                init: function () {
+                     this.render('event', function (el) {
+                        var salt = el.find('.salt'),
+                            pepper = el.find('.pepper');
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('click');
+                        expect(spy.calls.count()).toBe(1);
+                        pepper.trigger('click');
+                        expect(spy.calls.count()).toBe(2);
+                        
+                        this.disableEvents();
+                        spy.calls.reset();
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('click');
+                        expect(spy.calls.count()).toBe(0);
+                        pepper.trigger('click');
+                        expect(spy.calls.count()).toBe(0);
+                        
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should enable events', function (done) {
+            aldera.view('A', {
+                events: {
+                    'click .salt|.pepper': spy
+                },
+                
+                init: function () {
+                    this.render('event', function (el) {
+                        var salt = el.find('.salt'),
+                            pepper = el.find('.pepper');
+                            
+                        this.disableEvents();
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('click');
+                        expect(spy.calls.count()).toBe(0);
+                        pepper.trigger('click');
+                        expect(spy.calls.count()).toBe(0);
+                        
+                        this.enableEvents();
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('click');
+                        expect(spy.calls.count()).toBe(1);
+                        pepper.trigger('click');
+                        expect(spy.calls.count()).toBe(2);
+                        
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should allow events to be added', function (done) {
+             aldera.view('A', {
+                init: function () {
+                    this.render('event', function (el) {
+                        this.disableEvents();
+                        this.addEvent('click .salt|.pepper', spy);
+                        this.enableEvents();
+                        expect(spy.calls.count()).toBe(0);
+                        el.find('.salt').trigger('click');
+                        expect(spy.calls.count()).toBe(1);
+                        el.find('.pepper').trigger('click');
+                        expect(spy.calls.count()).toBe(2);
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should allow events to be removed', function (done) {
+            aldera.view('A', {
+                events: {
+                    'click .salt|.pepper': spy
+                },
+            
+                init: function () {
+                    this.render('event', function (el) {
+                        var salt = el.find('.salt'),
+                            pepper = el.find('.pepper');
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('click');
+                        expect(spy.calls.count()).toBe(1);
+                        pepper.trigger('click');
+                        expect(spy.calls.count()).toBe(2);
+                        
+                        this.disableEvents();
+                        this.removeEvent('click .salt|.pepper');
+                        this.enableEvents();
+                        spy.calls.reset();
+                        
+                        expect(spy.calls.count()).toBe(0);
+                        salt.trigger('click');
+                        expect(spy.calls.count()).toBe(0);
+                        pepper.trigger('click');
+                        expect(spy.calls.count()).toBe(0);
+                        
+                        done();
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+    });
 });

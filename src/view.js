@@ -55,7 +55,7 @@ var $view = (function () {
 
     var enableEvents = function () {
         this._eventsDisabled = false;
-        this.addEvents(this.events);
+        this.addEvents(this._events);
     };
     
     
@@ -134,7 +134,7 @@ var $view = (function () {
         jQuery.each(signature.events, function (index, event) {
             jQuery.each(signature.targets, function (index, target) {
                 events[(event + ' ' + target).trim()] = void 0;
-                el.off(event, target);
+                if (!self._eventsDisabled) el.off(event, target);
             });
         });
     };
@@ -226,6 +226,7 @@ var $view = (function () {
             events = this._events,
             proxy;
         
+        if (fn === void 0) return;
         this.removeEvent(signature);
         signature = parseSignature(signature);
         if ($isString(fn)) fn = this[fn];
@@ -233,8 +234,8 @@ var $view = (function () {
     
         jQuery.each(signature.events, function (index, event) {
             jQuery.each(signature.targets, function (index, target) {
-                events[(event + ' ' + target).trim()] = fn;             
-                el.on(event, target, proxy);
+                events[(event + ' ' + target).trim()] = fn;
+                if (!self._eventsDisabled) el.on(event, target, proxy);
             });
         });
     };
