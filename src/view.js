@@ -223,16 +223,18 @@ var $view = (function () {
     var addEvent = function (signature, fn) {
         var self = this,
             el = this.el,
-            events = this._events;
+            events = this._events,
+            proxy;
         
         this.removeEvent(signature);
         signature = parseSignature(signature);
         if ($isString(fn)) fn = this[fn];
+        proxy = jQuery.proxy(fn, self);
     
         jQuery.each(signature.events, function (index, event) {
             jQuery.each(signature.targets, function (index, target) {
-                events[(event + ' ' + target).trim()] = fn;              
-                el.on(event, target, jQuery.proxy(fn, self));
+                events[(event + ' ' + target).trim()] = fn;             
+                el.on(event, target, proxy);
             });
         });
     };
