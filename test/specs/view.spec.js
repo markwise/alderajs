@@ -752,6 +752,48 @@ describe('aldera.view', function () {
             
             aldera.view('A').create();
         });
+        
+        it('should have jQuery event object as parameter', function (done) {
+            aldera.view('A', {
+                events: {
+                    'click .salt': 'salt'
+                },
+                
+                init: function () {
+                    this.render('event', function (el) {
+                        el.find('.salt').trigger('click');
+                    });
+                },
+                
+                salt: function (event) {
+                    expect(event.constructor).toBe(jQuery.Event);
+                    done();
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should have view as context', function (done) {
+            aldera.view('A', {
+                events: {
+                    'click .salt': 'salt'
+                },
+                
+                init: function () {
+                    this.render('event', function (el) {
+                        el.find('.salt').trigger('click');
+                    });
+                },
+                
+                salt: function (event) {
+                    expect(this.constructor.name).toBe('A');
+                    done();
+                }
+            });
+            
+            aldera.view('A').create();
+        });
     });
     
     
