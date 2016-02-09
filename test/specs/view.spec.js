@@ -1331,4 +1331,53 @@ describe('aldera.view', function () {
             aldera.view('A').create();
         });
     });
+    
+    
+    describe('mixin', function () {
+    
+        afterEach(function () {
+            aldera.view('A').remove();
+            // This is for testing only and should never be done
+            aldera._mixins = {};
+        });
+    
+        it('should mixin attributes', function () {
+            aldera.mixin('test', function () {
+                return function () {
+                    this.hello = function () {},
+                    this.world = function () {}
+                }
+            });
+        
+            aldera.view('A', {
+                init: function () {
+                    expect(this.hello).toBe(void 0);
+                    expect(this.world).toBe(void 0);
+                    this.mixin('test');
+                    expect(this.hello).toEqual(jasmine.any(Function));
+                    expect(this.world).toEqual(jasmine.any(Function));
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should pass options to mixin', function () {
+            aldera.mixin('test', function () {
+                return function (opts) {
+                    expect(opts.msg).toBe('hello world');
+                }
+            });
+        
+            aldera.view('A', {
+                init: function () {
+                    this.mixin('test', {
+                        msg: 'hello world'
+                    });
+                }
+            });
+            
+            aldera.view('A').create();
+        });
+    });
 });
