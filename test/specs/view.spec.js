@@ -1,12 +1,4 @@
 describe('aldera.view', function () {
-
-    it('should define a view', function () {
-        expect(aldera.view('A')).toBe(void 0);
-        aldera.view('A', {});
-        expect(aldera.view('A').constructor.name).toBe('View');
-        expect(aldera.view('A').create).toEqual(jasmine.any(Function));
-        aldera.view('A').remove();
-    });
     
     it('should create a view instance', function () {
         var a;
