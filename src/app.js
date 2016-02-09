@@ -146,6 +146,7 @@ var $App = function App() {
     this.fns = list('fn');
     this.service = store('service');
     this.services = list('service');
+    this.root = $root;
     this.version = '@version';
 
 }).call($App.prototype);
