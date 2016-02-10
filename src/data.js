@@ -3,10 +3,15 @@
 // $Data
 //
 
-var $Data = (function () {
-    var getValue = function (model, path) {
+var $Data = function Data(data) {
+    this.reset(data);
+};
+
+(function () {
+    
+    var getValue = function (path) {
         var keys = path.split(/\./),
-            data = model,
+            data = this._data,
             dataIndex,
             dataKey,
             value;
@@ -81,20 +86,23 @@ var $Data = (function () {
         
         return value;
     };
+   
     
-    var getValues = function (model, paths) {
-        var values = {};
+    var getValues = function (paths) {
+        var self = this,
+            values = {};
         
         jQuery.each(paths, function (index, path) {
-            values[path] = getValue(model, path);
+            values[path] = getValue.call(self, path);
         });
         
         return values;
     };
+   
     
-    var setValue = function (model, path, value) {
+    var setValue = function (path, value) {
         var keys = path.split(/\./),
-            data = model,
+            data = this._data,
             dataIndex,
             dataKey;
         
@@ -151,58 +159,50 @@ var $Data = (function () {
             data[dataKey] = value;
         }
     };
+   
+   
+    var setValues = function (paths) {
+        var self = this;
     
-    var setValues = function (model, paths) {
         jQuery.each(paths, function (path, value) {
-            setValue(model, path, value);
+            setValue.call(self, path, value);
         });
     };
    
-    
-    var Fn = function Data(data) {
-        var self = this;
-        
-        self.model = {};
-        
-        if ($isObject(data)) {
-            self.set(data);
+   
+    this.get = function (path) {
+        if ($isString(path)) {
+            return getValue.call(this, path);
+        } else
+        if ($isArray(path)) {
+            return getValues.call(this, path);
         }
     };
-
-    Fn.prototype = {
-
-
-        get: function (path) {
-            var self = this,
-                value;
-            
-            if ($isString(path)) {
-                value = getValue(self.model, path);
-            } else
-            if ($isArray(path)) {
-                value = getValues(self.model, path);
-            }
-            
-            return value;
-        },
     
-        
-        set: function (path, value) {
-            var self = this;
     
-            if ($isString(path)) {
-                setValue(self.model, path, value);
-            } else
-            if ($isObject(path)) {
-                setValues(self.model, path);
-            }
-        },
-
-        
-        toJSON: function () {
-            return jQuery.extend(true, {}, this.model);
+    this.set = function (path, value) {
+        if ($isString(path)) {
+            setValue.call(this, path, value);
+        } else
+        if ($isObject(path)) {
+            setValues.call(this, path);
         }
     };
+    
+    
+    this.reset = function (data) {
+        this._data = {};
+        if ($isObject(data)) this.set(data);
+    };
 
-    return Fn;
-}());
+    
+    this.toString = function () {
+        return JSON.stringify(this._data);
+    };
+
+    
+    this.toJSON = function () {
+        return JSON.parse(this.toString());
+    };
+    
+}).call($Data.prototype);
