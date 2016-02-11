@@ -232,6 +232,9 @@ describe('Data', function () {
         
         it('should return undefined', function () {
             expect(data.get()).toBe(void 0);
+            expect(data.get('a')).toBe(void 0);
+            expect(data.get('a.b')).toBe(void 0);
+            expect(data.get('a[]')).toBe(void 0);
         });
         
         it('should get a value', function () {
