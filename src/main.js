@@ -41,10 +41,6 @@ var aldera = (function ($) {
         return typeof obj === 'number';
     };
     
-    var $isBoolean = function (obj) {
-        return typeof obj === 'boolean';
-    };
-    
     var $isObject = function (obj) {
         return {}.toString.call(obj) === '[object Object]';
     };
