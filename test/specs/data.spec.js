@@ -262,6 +262,7 @@ describe('Data', function () {
             expect(data.get('colors[0]')).toEqual('red');
             expect(data.get('colors[1]')).toEqual('green');
             expect(data.get('colors[2]')).toEqual('blue');
+            expect(data.get('colors[0][0]')).toBe(void 0);
             
             data.reset();
             data.set('colors', [['red'], ['green'], ['blue']]);

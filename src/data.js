@@ -1,8 +1,3 @@
-//
-// @constructor
-// $Data
-//
-
 var $Data = function Data(data) {
     this.reset(data);
 };
@@ -11,80 +6,63 @@ var $Data = function Data(data) {
     
     var getValue = function (path) {
         var keys = path.split(/\./),
-            data = this._data,
-            dataIndex,
-            dataKey,
-            value;
+            lastIndex = keys.length - 1,
+            data = this._data;
         
         jQuery.each(keys, function (i, key) {
+            // Matches if key looks like an array
             var match = key.match(/^(\w+)((?:\[\d*\])+)$/),
-                indexes,
-                obj;
+                indices;
             
-            if ($isArray(data)) {
-                if ($isNumber(dataIndex)) {
-                    obj = data[dataIndex];
-                }
+            // Parse as array
+            if (match) {
+                data = data[match[1]];
                 
-                if ($isObject(obj)) {
-                    data = obj;
-                } else {
+                if (!$isArray(data)) {
                     data = void 0;
+                    // Break out of jQuery.each
                     return false;
                 }
-            }
-            
-            if (match) {
-                dataIndex = match[1];
-                indexes = match[2].match(/\[\d*\]/g);
                 
-                jQuery.each(indexes, function (j, index) {
-                    var arr;
-                    
+                indices = match[2].match(/\[\d*\]/g);
+                
+                jQuery.each(indices, function (j, index) {
+                    // null if brackets are empty, otherwise a string
                     index = index.match(/\d+/);
                     
-                    if (dataIndex !== null) {
-                        arr = data[dataIndex];
-                    }
-                    
-                    if ($isArray(arr)) {
-                        data = arr;
-                    } else {
-                        data = void 0;
+                    if (index === null) {
+                        if (indices.length - 1 > j || lastIndex > i) data = void 0;
+                        // Break out of jQuery.each
                         return false;
                     }
                     
-                    dataIndex = index ? +index : index;
+                    if ($isArray(data)) {
+                        data = data[+index];
+                    } else {
+                        data = void 0;
+                        // Break out of jQuery.each
+                        return false;
+                    }
                 });
                 
                 if (data === void 0) {
+                    // Break out of jQuery.each
                     return false;
                 }
-                
+            
+            // Parse as object
             } else {
-                if (keys[i + 1] !== void 0) {
-                    obj = data[key];
-                    
-                    if ($isObject(obj)) {
-                        data = obj;
-                    } else {
-                        data = void 0;
-                        return false;
-                    }
+                if ($isObject(data)) {
+                    data = data[key];
+                } else {
+                    data = void 0;
+                    // Break out of jQuery.each
+                    return false;
                 }
-                
-                dataKey = key;
             }
         });
-    
-        if ($isObject(data)) {
-            value = data[dataKey];
-        } else
-        if ($isArray(data)) {
-            value = $isNumber(dataIndex) ? data[dataIndex] : data;
-        }
         
-        return value;
+        return data;
     };
    
     
