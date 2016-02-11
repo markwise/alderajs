@@ -1,7 +1,3 @@
-//
-// $initialize
-//
-
 var $initialize = function (config) {
     var opts = $isObject(config.opts) ? config.opts : {};
     
@@ -15,6 +11,5 @@ var $initialize = function (config) {
     this.data = new $Data(config.data);
     this.addEvents(this.events);
     this.addOutlets(config.outlets || {});
-    this.init[0].call(this, opts);
-    //next(self.initialize, self, config.opts);
+    $next(this, this.init, opts);
 };

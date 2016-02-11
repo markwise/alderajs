@@ -15,6 +15,7 @@ module.exports = function (grunt) {
                 }
             },
             src: [
+                '<%= paths.src %>/next.js',
                 '<%= paths.src %>/loadTemplate.js',
                 '<%= paths.src %>/createViewElement.js',
                 '<%= paths.src %>/initialize.js',
