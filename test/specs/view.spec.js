@@ -104,7 +104,7 @@ describe('aldera.view', function () {
             }, 50);
         });
 
-        it('should have an options object parameter', function () {
+        it('should have an options object as the first parameter', function () {
             aldera.view('A', {
                 init: function (opts) {
                     expect(opts).toEqual(jasmine.any(Object));
@@ -126,6 +126,86 @@ describe('aldera.view', function () {
                     foo: 'bar'
                 }
             });
+        });
+                
+        it('should call first function in queue', function () {
+            var spy = jasmine.createSpy();
+        
+            aldera.view('A', {
+                init: [spy]
+            });
+        
+            aldera.view('A').create();
+            expect(spy).toHaveBeenCalled();
+        });
+        
+        it('should not have next function as last parameter', function () {
+            aldera.view('A', {
+                init: function (opts, next) {
+                    expect(next).toBe(void 0);
+                }
+            });
+        
+            aldera.view('A').create();
+            aldera.view('A').remove();
+            
+            aldera.view('A', {
+                init: [
+                    function (opts, next) {
+                        expect(next).toBe(void 0);
+                    }
+                ]
+            });
+            
+            aldera.view('A').create();
+        });
+        
+        it('should have next function as last parameter', function () {
+            aldera.view('A', {
+                init: [
+                    function (opts, next) {
+                        expect(next).toEqual(jasmine.any(Function));
+                    },
+                    function () {}
+                ]
+            });
+        
+            aldera.view('A').create();
+        });
+        
+        it('should call next function in queue', function () {
+            var spy = jasmine.createSpy();
+            
+            aldera.view('A', {
+                init: [
+                    function (opts, next) {next()},
+                    function (next) {next()},
+                    function (next) {next()},
+                    function (next) {next()},
+                    spy
+                ]
+            });
+        
+            aldera.view('A').create();
+            expect(spy).toHaveBeenCalled();
+        });
+        
+        it('should pass options to next function', function () {
+            aldera.view('A', {
+                init: [
+                    function (opts, next) {
+                        next('a', 'b', 'c');
+                    },
+                    function (a, b, c, next) {
+                        expect(a).toBe('a');
+                        expect(b).toBe('b');
+                        expect(c).toBe('c');
+                        expect(next).toBe(void 0);
+                    }
+                ]
+            });
+        
+            aldera.view('A').create();
         });
     });
     

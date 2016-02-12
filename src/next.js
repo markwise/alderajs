@@ -1,9 +1,9 @@
 var $next = (function () {
-    
+        
     //
-    // A curried function storing the function queue and current index of the
-    // next function to be called. The function referenced by the next parameter
-    // for each function in q is returned.
+    // A curried function storing the function queue, the current index of the
+    // next function to be called and the functions context. The function 
+    // referenced by the next parameter is returned.
     //
     // @param {array} q
     //      The function queue.
@@ -11,87 +11,40 @@ var $next = (function () {
     // @param {number} index
     //      The next index in q.
     //
+    // @param {object} context
+    //      The functions context.
+    //
     // @returns {function}
     //
     
     var next = function (q, index, context) {
         return function () {
-            var fn = q[index] || function(){},
+            var fn = q[index],
                 args = [].slice.call(arguments);
             
-            args.push(next(q, index += 1, context));
+            if (index < q.length - 1) {
+                args.push(next(q, index += 1, context));
+            }
+            
             fn.apply(context, args);
         };
     };
     
     
     //
-    // Removes items from queue that are not functions.
+    // A function queue that is controlled by calling each functions next
+    // parameter. The next parameter is the last parameter and will be defined 
+    // if there is another function in the queue to call.
     //
     // @param {array} q
     //      The function queue.
     //
-    
-    var clean = function (q) {
-        var i = q.length;
-        
-        while (i--) {
-            if (typeof q[i] !== 'function') {
-                q.splice(i, 1);
-            }
-        }
-    };
-    
-    
-    //
-    // $next(context, q [,arg])
-    // A queue of functions called in order top down by calling each functions 
-    // next parameter.
-    //
-    // @param {*} context
-    //      The 'this' context to bind each function in q.
-    //
-    // @param {array} q
-    //      The function queue.
-    //
-    // @param {*} [arg]
-    //      Optional arguments passed to the first function in q.
-    //
-    // -------------------------------------------------------------------------
-    //
-    // $next(q [,arg])
-    // A queue of functions called in order top down by calling each functions 
-    // next argument.
-    //
-    // @param {array} q
-    //      The function queue.
-    //
-    // @param {*} [arg]
-    //      Optional arguments passed to the first function in q.
+    // @param {object} opts
+    //      Options object passed as first argument to first function in queue.
     //
     
-    return function (context, q) {
-        var args;
-        
-        //Normalize arguments to account for optional context
-        if (Array.isArray(context)) {
-            args = [].slice.call(arguments, 1);
-            q = context;
-            context = void 0;
-        } else {
-            args = [].slice.call(arguments, 2);
-        }
-        
-        //q should be an array
-        if (!Array.isArray(q)) return;
-        
-        //q should be an array of functions
-        clean(q);
-        
-        //q should not be empty
-        if (!q.length) return;
-        
-        //Call first function in queue
-        next(q, 0, context).apply(null, args);
+    return function (q, opts) {
+        if (q.length === 0) return;
+        next(q, 0, this)(opts);
     };
 }());

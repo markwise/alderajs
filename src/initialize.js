@@ -11,5 +11,5 @@ var $initialize = function (config) {
     this.data = new $Data(config.data);
     this.addEvents(this.events);
     this.addOutlets(config.outlets || {});
-    $next(this, this.init, opts);
+    $next.call(this, this.init, opts);
 };
