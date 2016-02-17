@@ -9,7 +9,7 @@ var $initialize = function (config) {
         .attr('data-view', this.constructor.name);
     
     this.data = new $Data(config.data);
-    this.addEvents(this.events);
+    this.addEvents(this.events || {});
     this.addOutlets(config.outlets || {});
     $next.call(this, this.init, opts);
 };
